@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!--Компоненты-->
+
+    <!--Заголовок-->
+    <xs:complexType name="HeaderType">
+        <xs:attribute name="time" type="xs:dateTime" use="required"/>
+    </xs:complexType>
+
+    <!--Запрос-->
+    <xs:complexType name="RequestType">
+        <xs:sequence>
+            <xs:element name="user" type="xs:string"/>
+            <xs:element name="text" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--Статус ответа-->
+    <xs:complexType name="StatusType">
+        <xs:sequence>
+            <xs:element name="code">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:enumeration value="0"/>
+                        <xs:enumeration value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="reason" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--Ответ сервера-->
+    <xs:complexType name="ResponseType">
+        <xs:sequence>
+            <xs:element name="status" type="StatusType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--Сообщение-->
+    <xs:complexType name="MessageType">
+        <xs:sequence>
+            <xs:element name="header" type="HeaderType"/>
+            <xs:choice>
+                <xs:element name="request" type="RequestType"/>
+                <xs:element name="response" type="ResponseType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!--Конечная сущность-->
+    <xs:element name="message" type="MessageType"/>
+
+</xs:schema>

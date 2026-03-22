@@ -1,0 +1,7 @@
+spam
+badword_1
+badword_2
+fail
+lonely
+drugs
+slave
