@@ -5,7 +5,7 @@
 
     <!--Заголовок-->
     <xs:complexType name="HeaderType">
-        <xs:attribute name="time" type="xs:dateTime" use="required"/>
+        <xs:attribute name="time" type="xs:string" use="required"/>
     </xs:complexType>
 
     <!--Запрос-->

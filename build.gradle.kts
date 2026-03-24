@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     xmlbeansConfig("org.apache.xmlbeans:xmlbeans:5.3.0")
+    implementation("org.apache.xmlbeans:xmlbeans:5.3.0")
     implementation(files("lib/schema.jar"))
     implementation("org.xerial:sqlite-jdbc:3.51.3.0")
 
