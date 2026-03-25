@@ -38,7 +38,7 @@ public class ClientHandler implements Runnable {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[Server] Ошибка: " + e.getMessage());
+            System.err.println("[Server] Error: " + e.getMessage());
         } finally {
             try {
                 socket.close();
@@ -54,7 +54,7 @@ public class ClientHandler implements Runnable {
 
             RequestType request = message.getRequest();
             if (request == null) {
-                System.err.println("[Server] Получено сообщение без <request>");
+                System.err.println("[Server] Received message without <request>");
                 return XmlProcessor.buildResponse(1, "invalid message format");
             }
 
@@ -78,12 +78,12 @@ public class ClientHandler implements Runnable {
             DatabaseManager.getInstance().saveMessage(sentTime, user, text, code);
 
             System.out.printf("[Server] '%s': \"%s\" : %s%n",
-                    user, text, code == 0 ? "принято" : "отклонено");
+                    user, text, code == 0 ? "accepted" : "rejected");
 
             return XmlProcessor.buildResponse(code, reason);
 
         } catch (Exception e) {
-            System.err.println("[Server] Ошибка парсинга: " + e.getMessage());
+            System.err.println("[Server] Parsing error: " + e.getMessage());
             return XmlProcessor.buildResponse(1, "invalid message format");
         }
     }

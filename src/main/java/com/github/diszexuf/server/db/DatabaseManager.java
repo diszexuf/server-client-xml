@@ -17,10 +17,10 @@ public class DatabaseManager {
             try {
                 if (connection != null && !connection.isClosed()) {
                     connection.close();
-                    System.out.println("[DB] Соединение закрыто");
+                    System.out.println("[DB] Connection was closed");
                 }
             } catch (SQLException e) {
-                System.err.println("[DB] Ошибка при закрытии соединения: " + e.getMessage());
+                System.err.println("[DB] Error closing connection: " + e.getMessage());
             }
         }));
     }

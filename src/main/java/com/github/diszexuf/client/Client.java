@@ -22,22 +22,22 @@ public class Client {
             PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
-            System.out.println("[Client] Подключен к " + HOST + ":" + PORT);
-            System.out.println("Команды: -m <текст>  |  -h (выход)");
+            System.out.println("[Client] Connected to " + HOST + ":" + PORT);
+            System.out.println("Commands: -m <text>  |  -h (exit)");
 
             Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
             while (scanner.hasNextLine()) {
                 String input = scanner.nextLine().trim();
 
                 if (input.equals("-h")) {
-                    System.out.println("[Client] Выход");
+                    System.out.println("[Client] Exit");
                     break;
                 }
 
                 if (input.startsWith("-m ")) {
                     String text = input.substring(3).trim();
                     if (text.isEmpty()) {
-                        System.out.println("[Client] Текст не может быть пустым");
+                        System.out.println("[Client] Text cannot be empty");
                         continue;
                     }
                     out.println(XmlProcessor.buildRequest(username, text));
@@ -51,11 +51,11 @@ public class Client {
                     printStatus(sb.toString());
 
                 } else {
-                    System.out.println("[Client] Неизвестная команда");
+                    System.out.println("[Client] Unknown command");
                 }
             }
         } catch (IOException e) {
-            System.err.println("[Client] Не удалось подключиться: " + e.getMessage());
+            System.err.println("[Client] Failed to connect: " + e.getMessage());
         }
     }
 
@@ -64,12 +64,12 @@ public class Client {
             MessageDocument doc = XmlProcessor.parse(xml);
             var status = doc.getMessage().getResponse().getStatus();
             if (status.getCode().intValue() == 0) {
-                System.out.println("[Client] Сообщение принято");
+                System.out.println("[Client] Message received");
             } else {
-                System.out.println("[Client] Сообщение отклонено: " + status.getReason());
+                System.out.println("[Client] Message rejected: " + status.getReason());
             }
         } catch (Exception e) {
-            System.out.println("[Client] Не удалось разобрать ответ");
+            System.out.println("[Client] Unable to parse the response");
         }
     }
 }

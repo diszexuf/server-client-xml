@@ -15,24 +15,24 @@ public class Server {
 
     public static void main(String[] args) {
         Set<String> bannedWords = loadBannedWords(Path.of(BANNED_WORDS_FILE));
-        System.out.println("[Server] Запуск на порту " + PORT);
+        System.out.println("[Server] Launch on port " + PORT);
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("[Server] Подключение: " + clientSocket.getInetAddress());
+                System.out.println("[Server] Connection: " + clientSocket.getInetAddress());
                 Thread handler = new Thread(new ClientHandler(clientSocket, bannedWords));
                 handler.setDaemon(true);
                 handler.start();
             }
         } catch (IOException e) {
-            System.err.println("[Server] Ошибка: " + e.getMessage());
+            System.err.println("[Server] Error: " + e.getMessage());
         }
     }
 
     static Set<String> loadBannedWords(Path path) {
         if (!Files.exists(path)) {
-            System.out.println("[Server] banned_words.txt не найден");
+            System.out.println("[Server] banned_words.txt not found");
             return Collections.emptySet();
         }
         try (Stream<String> lines = Files.lines(path)) {
@@ -40,7 +40,7 @@ public class Server {
                     .map(String::trim)
                     .filter(s -> !s.isEmpty()).collect(Collectors.toUnmodifiableSet());
         } catch (IOException e) {
-            System.err.println("[Server] Ошибка чтения banned_words.txt");
+            System.err.println("[Server] Error reading banned_words.txt");
             return Collections.emptySet();
         }
     }
