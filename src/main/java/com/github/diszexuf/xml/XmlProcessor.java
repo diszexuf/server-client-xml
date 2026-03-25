@@ -8,7 +8,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class XmlProcessor {
-    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static final DateTimeFormatter FMT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private static final XmlOptions SAVE_OPTIONS = new XmlOptions()
+            .setSaveAggressiveNamespaces()
+            .setSaveOuter();
 
     public static String buildRequest(String user, String text) {
         MessageDocument doc = MessageDocument.Factory.newInstance();
@@ -17,7 +23,7 @@ public class XmlProcessor {
         RequestType request = message.addNewRequest();
         request.setUser(user);
         request.setText(text);
-        return doc.xmlText(new XmlOptions().setSavePrettyPrint());
+        return doc.xmlText(SAVE_OPTIONS);
     }
 
     public static String buildResponse(int code, String reason) {
@@ -28,10 +34,10 @@ public class XmlProcessor {
         StatusType status = response.addNewStatus();
         status.setCode(java.math.BigInteger.valueOf(code));
         status.setReason(reason);
-        return doc.xmlText(new XmlOptions().setSavePrettyPrint());
+        return doc.xmlText(SAVE_OPTIONS);
     }
 
     public static MessageDocument parse(String xml) throws XmlException {
-        return MessageDocument.Factory.parse(xml);
+        return MessageDocument.Factory.parse(xml.trim());
     }
 }

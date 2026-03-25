@@ -28,7 +28,7 @@ tasks.test {
 
 tasks.register<JavaExec>("runScomp") {
     group = "build"
-    description = "Генерация из message.xsd"
+    description = "Генерация классов из message.xsd"
 
     classpath = xmlbeansConfig
     mainClass.set("org.apache.xmlbeans.impl.tool.SchemaCompiler")
@@ -45,4 +45,30 @@ tasks.register<JavaExec>("runScomp") {
 
 tasks.named("compileJava") {
     dependsOn("runScomp")
+}
+
+tasks.register<JavaExec>("runServer") {
+    group = "application"
+    description = "Запуск серверной части"
+
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.github.diszexuf.server.Server")
+
+    // сервер должен видеть banned_words.txt рядом с собой
+    workingDir = rootDir
+
+    standardInput = System.`in`
+}
+
+tasks.register<JavaExec>("runClient") {
+    group = "application"
+    description = "Запуск клиентской части"
+
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.github.diszexuf.client.Client")
+
+    workingDir = rootDir
+
+    // Подключение консоли для ввода команад
+    standardInput = System.`in`
 }

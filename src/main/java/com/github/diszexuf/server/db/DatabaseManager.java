@@ -7,11 +7,22 @@ public class DatabaseManager {
 
     private static final String URL = "jdbc:sqlite:messages.db";
     private static DatabaseManager instance;
-    private Connection connection;
+    private final Connection connection;
 
     private DatabaseManager() throws SQLException {
         this.connection = DriverManager.getConnection(URL);
         initSchema();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                    System.out.println("[DB] Соединение закрыто");
+                }
+            } catch (SQLException e) {
+                System.err.println("[DB] Ошибка при закрытии соединения: " + e.getMessage());
+            }
+        }));
     }
 
     public static synchronized DatabaseManager getInstance() throws SQLException {

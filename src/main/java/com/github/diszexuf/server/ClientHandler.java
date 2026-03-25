@@ -3,17 +3,15 @@ package com.github.diszexuf.server;
 import com.github.diszexuf.server.db.DatabaseManager;
 import com.github.diszexuf.xml.XmlProcessor;
 import noNamespace.MessageDocument;
+import noNamespace.RequestType;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 public class ClientHandler implements Runnable {
-
-    private static final DateTimeFormatter FMT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final Socket socket;
     private final Set<String> bannedWords;
@@ -26,8 +24,8 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try (
-                BufferedReader in  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter    out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true)
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)
         ) {
             StringBuilder xmlBuffer = new StringBuilder();
             String line;
@@ -42,7 +40,10 @@ public class ClientHandler implements Runnable {
         } catch (Exception e) {
             System.err.println("[Server] Ошибка: " + e.getMessage());
         } finally {
-            try { socket.close(); } catch (IOException ignored) {}
+            try {
+                socket.close();
+            } catch (IOException ignored) {
+            }
         }
     }
 
@@ -50,7 +51,12 @@ public class ClientHandler implements Runnable {
         try {
             MessageDocument doc = XmlProcessor.parse(xml);
             var message = doc.getMessage();
-            var request = message.getRequest();
+
+            RequestType request = message.getRequest();
+            if (request == null) {
+                System.err.println("[Server] Получено сообщение без <request>");
+                return XmlProcessor.buildResponse(1, "invalid message format");
+            }
 
             String user = request.getUser();
             String text = request.getText();
@@ -58,7 +64,7 @@ public class ClientHandler implements Runnable {
 
             LocalDateTime sentTime;
             try {
-                sentTime = LocalDateTime.parse(time, FMT);
+                sentTime = LocalDateTime.parse(time, XmlProcessor.FMT);
             } catch (Exception e) {
                 sentTime = LocalDateTime.now();
             }
@@ -66,12 +72,12 @@ public class ClientHandler implements Runnable {
             boolean hasBanned = bannedWords.stream()
                     .anyMatch(w -> text.toLowerCase().contains(w.toLowerCase()));
 
-            int code      = hasBanned ? 1 : 0;
+            int code = hasBanned ? 1 : 0;
             String reason = hasBanned ? "used inappropriate language" : "success";
 
             DatabaseManager.getInstance().saveMessage(sentTime, user, text, code);
 
-            System.out.printf("[Server] '%s': \"%s\" → %s%n",
+            System.out.printf("[Server] '%s': \"%s\" : %s%n",
                     user, text, code == 0 ? "принято" : "отклонено");
 
             return XmlProcessor.buildResponse(code, reason);
