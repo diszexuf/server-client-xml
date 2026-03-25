@@ -25,7 +25,7 @@ public class Client {
             System.out.println("[Client] Подключен к " + HOST + ":" + PORT);
             System.out.println("Команды: -m <текст>  |  -h (выход)");
 
-            Scanner scanner = new Scanner(System.in);
+            Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
             while (scanner.hasNextLine()) {
                 String input = scanner.nextLine().trim();
 

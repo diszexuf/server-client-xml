@@ -16,6 +16,7 @@ dependencies {
     implementation("org.apache.xmlbeans:xmlbeans:5.3.0")
     implementation(files("lib/schema.jar"))
     implementation("org.xerial:sqlite-jdbc:3.51.3.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.25.3")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -58,6 +59,7 @@ tasks.register<JavaExec>("runServer") {
     workingDir = rootDir
 
     standardInput = System.`in`
+    jvmArgs("-Dfile.encoding=UTF-8", "-Dconsole.encoding=UTF-8")
 }
 
 tasks.register<JavaExec>("runClient") {
@@ -71,4 +73,5 @@ tasks.register<JavaExec>("runClient") {
 
     // Подключение консоли для ввода команад
     standardInput = System.`in`
+    jvmArgs("-Dfile.encoding=UTF-8", "-Dconsole.encoding=UTF-8")
 }

@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 set NUM_CLIENTS=3
@@ -26,7 +27,7 @@ for /l %%i in (1,1,%NUM_CLIENTS%) do (
 )
 
 echo.
-echo Все процессы запущены.
+echo Все процессы запущены
 echo Введите в окне клиента: -m Ваше сообщение
 echo Для выхода из клиента: -h
 echo.
