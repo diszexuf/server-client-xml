@@ -40,7 +40,6 @@ public class Client {
                         System.out.println("[Client] Текст не может быть пустым");
                         continue;
                     }
-                    System.out.println(XmlProcessor.buildRequest(username, text));
                     out.println(XmlProcessor.buildRequest(username, text));
 
                     StringBuilder sb = new StringBuilder();
